@@ -16,3 +16,20 @@ steps:
 
   - script: npm test
     displayName: 'Run tests'
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)'
+      Contents: |
+        index.js
+        package.json
+        package-lock.json
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Prepare application files'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'
+    displayName: 'Publish build artifact'
