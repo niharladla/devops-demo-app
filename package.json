@@ -1,0 +1,14 @@
+{
+  "name": "devops-demo-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  "start": "node index.js",
+  "test": "echo \"No tests configured yet\""
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
