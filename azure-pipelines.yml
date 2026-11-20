@@ -27,12 +27,11 @@ steps:
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
     displayName: 'Prepare application files'
 
-  - task: PublishBuildArtifacts@1
+  - task: PublishPipelineArtifact@1
     inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'drop'
-      publishLocation: 'Container'
-    displayName: 'Publish build artifact'
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: 'drop'
+    displayName: 'Publish pipeline artifact'
 
   - task: AzureWebApp@1
     displayName: 'Deploy to Azure App Service'
