@@ -1,13 +1,15 @@
 
 const http = require('http');
 
+const appEnv = process.env.APP_ENV || 'development';
+
 const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hello! My application is deployed through Azure DevOps CI/CD.');
+
+    res.end(`Hello! My first DevOps application is running.
+Environment: ${appEnv}`);
 });
 
-const port = process.env.PORT || 3000;
-
-server.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+server.listen(process.env.PORT || 3000, () => {
+    console.log(`Server running in ${appEnv} environment`);
 });
