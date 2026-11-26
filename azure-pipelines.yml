@@ -33,10 +33,3 @@ steps:
       artifact: 'drop'
     displayName: 'Publish pipeline artifact'
 
-  - task: AzureWebApp@1
-    displayName: 'Deploy to Azure App Service'
-    inputs:
-      azureSubscription: 'sc-azure-devops-demo'
-      appType: 'webAppLinux'
-      appName: 'devops-demo-nihar'
-      package: '$(Build.ArtifactStagingDirectory)'
