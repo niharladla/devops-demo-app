@@ -5,7 +5,7 @@ const server = http.createServer((req, res) => {
     console.log(`Request received: ${req.method} ${req.url}`);
 
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hello! My first DevOps application is running.\nEnvironment: production');
+    res.end('Hello! My DevOps CI/CD pipeline is working!\nVersion: 2\nEnvironment: production');
 
 });
 
