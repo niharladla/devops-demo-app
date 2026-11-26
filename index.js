@@ -1,12 +1,17 @@
 const http = require('http');
 
-const server = http.createServer((req, res) => {
+const appEnv = process.env.APP_ENV || 'development';
 
+const server = http.createServer((req, res) => {
     console.log(`Request received: ${req.method} ${req.url}`);
 
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hello! My DevOps CI/CD pipeline is working!\nVersion: 2\nEnvironment: $APP_ENV');
 
+    res.end(
+        `Hello! My DevOps CI/CD pipeline is working!\n` +
+        `Version: 3\n` +
+        `Environment: ${appEnv}`
+    );
 });
 
 const PORT = process.env.PORT || 3000;
