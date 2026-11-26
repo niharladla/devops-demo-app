@@ -1,35 +1,36 @@
 
-trigger:
-  - main
+trigger: none
+
+resources:
+  pipelines:
+    - pipeline: ci
+      source: niharladla.devops-demo-app
+      trigger: true
 
 pool:
   vmImage: 'windows-latest'
 
-steps:
-  - task: UseNode@1
-    inputs:
-      version: '24.x'
-    displayName: 'Install Node.js'
+stages:
+  - stage: Deploy_QA
+    displayName: 'Deploy to QA'
 
-  - script: npm install
-    displayName: 'Install dependencies'
+    jobs:
+      - deployment: DeployQA
+        displayName: 'Deploy application to QA'
+        environment: QA
 
-  - script: npm test
-    displayName: 'Run tests'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: ci
+                  artifact: drop
+                  path: $(Pipeline.Workspace)/drop
 
-  - task: CopyFiles@2
-    inputs:
-      SourceFolder: '$(Build.SourcesDirectory)'
-      Contents: |
-        index.js
-        package.json
-        package-lock.json
-      TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    displayName: 'Prepare application files'
-
-  - task: PublishPipelineArtifact@1
-    inputs:
-      targetPath: '$(Build.ArtifactStagingDirectory)'
-      artifact: 'drop'
-    displayName: 'Publish pipeline artifact'
-
+                - task: AzureWebApp@1
+                  displayName: 'Deploy to QA App Service'
+                  inputs:
+                    azureSubscription: 'sc-azure-devops-demo'
+                    appType: 'webAppLinux'
+                    appName: 'devops-demo-nihar-qa'
+                    package: '$(Pipeline.Workspace)/drop'
