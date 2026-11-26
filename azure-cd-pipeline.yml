@@ -13,18 +13,24 @@ pool:
 stages:
   - stage: Deploy_QA
     displayName: 'Deploy to QA'
-
     jobs:
       - deployment: DeployQA
         displayName: 'Deploy application to QA'
         environment: QA
-
         strategy:
           runOnce:
             deploy:
               steps:
-                - download: ci
-                  artifact: drop
+                - task: DownloadPipelineArtifact@2
+                  displayName: 'Download CI artifact'
+                  inputs:
+                    buildType: 'specific'
+                    project: '$(System.TeamProject)'
+                    pipeline: '$(resources.pipeline.ci.pipelineID)'
+                    buildVersionToDownload: 'specific'
+                    buildId: '$(resources.pipeline.ci.runID)'
+                    artifactName: 'drop'
+                    targetPath: '$(Pipeline.Workspace)/drop'
 
                 - task: AzureWebApp@1
                   displayName: 'Deploy to QA App Service'
@@ -32,4 +38,35 @@ stages:
                     azureSubscription: 'sc-azure-devops-demo'
                     appType: 'webAppLinux'
                     appName: 'devops-demo-nihar-qa'
-                    package: '$(Pipeline.Workspace)/ci/drop'
+                    package: '$(Pipeline.Workspace)/drop'
+
+  - stage: Deploy_Production
+    displayName: 'Deploy to Production'
+    dependsOn: Deploy_QA
+    condition: succeeded()
+    jobs:
+      - deployment: DeployProduction
+        displayName: 'Deploy application to Production'
+        environment: Production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadPipelineArtifact@2
+                  displayName: 'Download CI artifact'
+                  inputs:
+                    buildType: 'specific'
+                    project: '$(System.TeamProject)'
+                    pipeline: '$(resources.pipeline.ci.pipelineID)'
+                    buildVersionToDownload: 'specific'
+                    buildId: '$(resources.pipeline.ci.runID)'
+                    artifactName: 'drop'
+                    targetPath: '$(Pipeline.Workspace)/drop'
+
+                - task: AzureWebApp@1
+                  displayName: 'Deploy to Production App Service'
+                  inputs:
+                    azureSubscription: 'sc-azure-devops-demo'
+                    appType: 'webAppLinux'
+                    appName: 'devops-demo-nihar'
+                    package: '$(Pipeline.Workspace)/drop'
