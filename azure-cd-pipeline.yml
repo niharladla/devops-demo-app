@@ -10,22 +10,27 @@ resources:
 pool:
   vmImage: 'windows-latest'
 
-steps:
-  - task: DownloadPipelineArtifact@2
-    displayName: 'Download CI artifact'
-    inputs:
-      buildType: 'specific'
-      project: '$(System.TeamProject)'
-      pipeline: '$(resources.pipeline.ci.pipelineID)'
-      buildVersionToDownload: 'specific'
-      buildId: '$(resources.pipeline.ci.runID)'
-      artifactName: 'drop'
-      targetPath: '$(Pipeline.Workspace)/drop'
+stages:
+  - stage: Deploy_QA
+    displayName: 'Deploy to QA'
 
-- task: AzureWebApp@1
-  displayName: 'Deploy to QA App Service'
-  inputs:
-    azureSubscription: 'sc-azure-devops-demo'
-    appType: 'webAppLinux'
-    appName: 'devops-demo-nihar-qa'
-    package: '$(Pipeline.Workspace)/drop'
+    jobs:
+      - deployment: DeployQA
+        displayName: 'Deploy application to QA'
+        environment: QA
+
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: ci
+                  artifact: drop
+                  path: $(Pipeline.Workspace)/drop
+
+                - task: AzureWebApp@1
+                  displayName: 'Deploy to QA App Service'
+                  inputs:
+                    azureSubscription: 'sc-azure-devops-demo'
+                    appType: 'webAppLinux'
+                    appName: 'devops-demo-nihar-qa'
+                    package: '$(Pipeline.Workspace)/drop'
