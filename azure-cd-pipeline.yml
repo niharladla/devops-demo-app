@@ -22,10 +22,10 @@ steps:
       artifactName: 'drop'
       targetPath: '$(Pipeline.Workspace)/drop'
 
-  - task: AzureWebApp@1
-    displayName: 'Deploy to Azure App Service'
-    inputs:
-      azureSubscription: 'sc-azure-devops-demo'
-      appType: 'webAppLinux'
-      appName: 'devops-demo-nihar'
-      package: '$(Pipeline.Workspace)/drop'
+- task: AzureWebApp@1
+  displayName: 'Deploy to QA App Service'
+  inputs:
+    azureSubscription: 'sc-azure-devops-demo'
+    appType: 'webAppLinux'
+    appName: 'devops-demo-nihar-qa'
+    package: '$(Pipeline.Workspace)/drop'
