@@ -25,7 +25,6 @@ stages:
               steps:
                 - download: ci
                   artifact: drop
-                  path: $(Pipeline.Workspace)/drop
 
                 - task: AzureWebApp@1
                   displayName: 'Deploy to QA App Service'
@@ -33,4 +32,4 @@ stages:
                     azureSubscription: 'sc-azure-devops-demo'
                     appType: 'webAppLinux'
                     appName: 'devops-demo-nihar-qa'
-                    package: '$(Pipeline.Workspace)/drop'
+                    package: '$(Pipeline.Workspace)/ci/drop'
